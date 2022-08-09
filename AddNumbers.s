@@ -1,7 +1,7 @@
 .data
 result: .byte 0
-var1: .ascii "000\n"
-var2: .ascii "000\n"
+var1: .ascii "\n\n\n\n"
+var2: .ascii "\n\n\n\n"
 text1: .ascii "Enter Number 1:\n"
 text2: .ascii "Enter Number 2:\n"
 text3: .ascii "Result:\n"
@@ -41,21 +41,85 @@ _start:
       pop %eax
       push %eax
       shr $8, %eax
+      cmp $0xa0a0a, %eax
+      jne no_zeros_added_1
+      mov %ebx, %edx
+      mov $0x30, %ebx
+      mov $0x30, %ecx
+      pop %eax
+      jmp continue
+no_zeros_added_1:
       shl $24, %eax
       shr $24, %eax
       mov %eax, %ecx
       pop %eax
       push %eax
       shr $16, %eax
+      cmp $0xa0a, %eax
+      jne no_zeros_added_2
+      mov %ecx, %edx
+      mov %ebx, %ecx
+      mov $0x30, %ebx
+      pop %eax
+      jmp continue
+no_zeros_added_2:
       shl $24, %eax
       shr $24, %eax
       mov %eax, %edx
       pop %eax
+continue:
       xor %eax, %eax
       sub $0x30, %ebx
       sub $0x30, %ecx
       sub $0x30, %edx
+      push %ebx
+      push %ecx
+      push %edx
+      xor %ebx, %ebx
+      xor %ecx, %ecx
+      xor %edx, %edx
       mov var1, %eax
+      push %eax
+      shr $8, %eax
+      cmp $0xa0a0a, %eax
+      jne no_zeros_added_3
+      pop %eax
+      shl $16, %eax
+      shr $16, %eax
+      mov %eax, %edx
+      xor %eax, %eax
+      mov %edx, %eax
+      shl $8, %eax
+      mov $0x30, %al
+      shl $8, %eax
+      mov $0x30, %al
+      pop %edx
+      pop %ecx
+      pop %ebx
+      jmp start_maths
+no_zeros_added_3:
+      pop %eax
+      push %eax
+      shr $16, %eax
+      cmp $0xa0a, %eax
+      jne no_zeros_added_4
+      pop %eax
+      shl $8, %eax
+      shr $8, %eax
+      mov %eax, %edx
+      xor %eax, %eax
+      mov %edx, %eax
+      shl $8, %eax
+      mov $0x30, %al
+      pop %edx
+      pop %ecx
+      pop %ebx
+      jmp start_maths
+no_zeros_added_4:
+      pop %eax
+      pop %edx
+      pop %ecx
+      pop %ebx
 start_maths:
       cmp $0, %edx
       jne add_1
